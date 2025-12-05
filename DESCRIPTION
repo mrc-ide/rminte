@@ -1,0 +1,34 @@
+Package: rminte
+Title: R Interface to Python's MINTe (Malaria Intervention Emulator) Package
+Version: 0.1.0
+Authors@R: 
+    person("OJ", "Watson", email = "o.watson15@imperial.ac.uk", 
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-2374-0741"))
+Description: An R interface to the Python 'minte' package, providing neural 
+    network-based malaria scenario predictions for evaluating intervention 
+    strategies including ITNs (Insecticide-Treated Nets), IRS (Indoor Residual 
+    Spraying), and LSM (Larval Source Management). Uses 'reticulate' to interface
+    with Python.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    reticulate (>= 1.26)
+Suggests: 
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    ggplot2
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "minte", pip = TRUE)
+    )
+  )
+URL: https://github.com/mrc-ide/rminte, https://mrc-ide.github.io/rminte/
+BugReports: https://github.com/mrc-ide/rminte/issues

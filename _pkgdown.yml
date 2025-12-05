@@ -1,0 +1,91 @@
+url: https://mrc-ide.github.io/rminte/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#0d6efd"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+
+home:
+  title: rminte - R Interface to MINTe Malaria Emulator
+  description: >
+    An R interface to the Python MINTe package for neural network-based 
+    malaria scenario predictions.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Getting Started
+        href: articles/rminte-tutorial.html
+
+reference:
+- title: Core Functions
+  desc: Main functions for running malaria intervention scenarios
+  contents:
+  - run_minter_scenarios
+  - run_mintweb_controller
+  - run_malaria_emulator
+
+- title: Scenario Creation
+  desc: Functions for creating and managing scenarios
+  contents:
+  - create_scenarios
+  - load_emulator_models
+  - generate_scenario_predictions
+  - predict_full_sequence
+  - batch_predict_scenarios
+
+- title: Utility Functions
+  desc: Helper functions for calculations and conversions
+  contents:
+  - calculate_overall_dn0
+  - available_net_types
+  - define_bednet_types
+  - resistance_to_dn0
+
+- title: Visualization
+
+  desc: Functions for plotting results
+  contents:
+  - create_scenario_plots
+  - plot_emulator_results
+  - plot_prevalence
+  - plot_cases
+
+- title: Model Cache
+  desc: Functions for managing model caching
+  contents:
+  - preload_all_models
+  - get_cached_model
+  - clear_cache
+
+- title: Setup & Configuration
+  desc: Functions for package setup and Python configuration
+  contents:
+  - minte_available
+  - configure_minte
+  - install_minte
+  - format_for_json
+
+articles:
+- title: Getting Started
+  navbar: ~
+  contents:
+  - rminte-tutorial
+
+authors:
+  footer:
+    roles: [aut, cre]
+    text: "Developed by"
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with
