@@ -13,3 +13,8 @@
 ^CRAN-SUBMISSION$
 ^\.Rcheck$
 ^.*\.tar\.gz$
+^vignettes/plots$
+^vignettes/.*\.html$
+^.*\.pdf$
+^doc$
+^Meta$

@@ -81,13 +81,15 @@ test_that("calculate_overall_dn0 returns list with dn0 and itn_use", {
 })
 
 test_that("available_net_types returns character vector", {
+
   skip_if_not(minte_available(), "minte Python package not available")
   
   net_types <- available_net_types()
   
   expect_type(net_types, "character")
   expect_true(length(net_types) > 0)
-  expect_true("py_only" %in% net_types || "pyrethroid" %in% tolower(net_types))
+  # Check for any pyrethroid-related net type
+  expect_true(any(grepl("pyrethroid", net_types, ignore.case = TRUE)))
 })
 
 test_that("preload_all_models runs without error", {

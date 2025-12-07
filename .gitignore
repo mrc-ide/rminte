@@ -29,3 +29,8 @@ __pycache__/
 # Test artifacts
 *.png
 *.csv
+/doc/
+/Meta/
+
+# Built vignettes (built fresh in CI)
+inst/doc/

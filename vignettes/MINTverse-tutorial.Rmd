@@ -321,7 +321,12 @@ cat("Created plots:", names(plots), "\n")
 The plots have been saved to the `plots/` folder. Here is the combined plot:
 
 ```{r show-combined-plot, echo=FALSE, out.width="100%"}
-knitr::include_graphics("plots/prevalence_all_scenarios_combined.png")
+plot_file <- "plots/prevalence_all_scenarios_combined.png"
+if (file.exists(plot_file)) {
+  knitr::include_graphics(plot_file)
+} else {
+  message("Plot file not found: ", plot_file)
+}
 ```
 
 ## 10. Optional: custom inline plot

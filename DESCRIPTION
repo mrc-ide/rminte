@@ -5,6 +5,8 @@ Authors@R:
     person("OJ", "Watson", email = "o.watson15@imperial.ac.uk", 
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2374-0741"))
+Author: OJ Watson [aut, cre] (<https://orcid.org/0000-0003-2374-0741>)
+Maintainer: OJ Watson <o.watson15@imperial.ac.uk>
 Description: An R interface to the Python 'minte' package, providing neural 
     network-based malaria scenario predictions for evaluating intervention 
     strategies including ITNs (Insecticide-Treated Nets), IRS (Indoor Residual 
@@ -21,7 +23,9 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    ggplot2
+    ggplot2,
+    dplyr,
+    tidyr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/reticulate:
