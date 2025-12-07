@@ -1,6 +1,3 @@
-#' @keywords internal
-"_PACKAGE"
-
 #' rminte: R Interface to Python's MINTe Package
 #'
 #' @description
@@ -28,16 +25,12 @@
 #' @section Setup:
 #' \itemize{
 #'   \item \code{\link{minte_available}}: Check if minte is available
-#'   \item \code{\link{minte_init}}: Initialize the Python module
 #'   \item \code{\link{install_minte}}: Install minte Python package
 #' }
 #'
-#' @docType package
-#' @name rminte-package
-#' @aliases rminte
-#'
 #' @importFrom reticulate import py_available py_install py_to_r r_to_py
-NULL
+#' @keywords internal
+"_PACKAGE"
 
 # Global variable declarations to avoid R CMD check notes
 # Package-level Python module references (set in .onLoad with delay_load)

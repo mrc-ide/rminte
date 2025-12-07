@@ -55,7 +55,7 @@ minte_available <- function() {
 #' @return Invisible NULL
 #'
 #' @examples
-#' \dontrun
+#' \dontrun{
 #' # Request specific Python version
 #' configure_minte(python_version = ">=3.10")
 #'

@@ -26,12 +26,14 @@
 #'   "cases", or both. Default is c("prevalence", "cases").
 #' @param benchmark Logical. If TRUE, print timing benchmarks. Default FALSE.
 #'
-#' @return A list (MinterResults) containing:
+#' @return A list of class "minter_results" containing:
+#' \describe{
 #'   \item{prevalence}{Data frame of prevalence predictions over time}
 #'   \item{cases}{Data frame of clinical case predictions over time}
 #'   \item{scenario_meta}{Data frame with per-scenario metadata}
-#'   \item{eir_valid}{Logical indicating if EIR is within calibrated range
+#'   \item{eir_valid}{Logical indicating if EIR is within calibrated range}
 #'   \item{benchmarks}{List of timing information (if benchmark=TRUE)}
+#' }
 #'
 #' @examples
 #' \dontrun{
