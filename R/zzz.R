@@ -1,23 +1,27 @@
 # Delay-loaded Python module references
 # These are populated in .onLoad() with delay_load = TRUE
-# Declared as global variables in rminte-package.R to avoid R CMD check notes
 minte <- NULL
 np <- NULL
 pd <- NULL
 
 .onLoad <- function(libname, pkgname) {
-  # Declare Python requirements using py_require() - the modern recommended approach
- # This declares dependencies that will be automatically provisioned
- # when Python is initialized (via ephemeral virtual environment if needed)
+  # Configure reticulate environment for this package
+  reticulate::configure_environment(pkgname)
+  
+  # Declare Python requirements using py_require()
+  # This creates a manifest but doesn't install anything yet
+  # Only when these modules are first used will they be installed
   reticulate::py_require("minte")
+  reticulate::py_require("numpy")
+  reticulate::py_require("pandas")
   
   # Use delay_load = TRUE to:
- # 1. Allow package to load even if Python/minte not installed (CRAN testing)
- # 2. Allow users to configure Python environment before first use
- # 3. Defer Python initialization until actually needed
-  minte <<- reticulate::import("minte", delay_load = TRUE)
-  np <<- reticulate::import("numpy", delay_load = TRUE)
-  pd <<- reticulate::import("pandas", delay_load = TRUE)
+  # 1. Allow package to load even if Python/minte not installed (CRAN testing)
+  # 2. Allow users to configure Python environment before first use
+  # 3. Defer Python initialization until actually needed
+  assign("minte", reticulate::import("minte", delay_load = TRUE), envir = parent.env(environment()))
+  assign("np", reticulate::import("numpy", delay_load = TRUE), envir = parent.env(environment()))
+  assign("pd", reticulate::import("pandas", delay_load = TRUE), envir = parent.env(environment()))
 }
 
 #' Check if minte Python module is available

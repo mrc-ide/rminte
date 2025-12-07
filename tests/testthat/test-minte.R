@@ -6,7 +6,7 @@ test_that("minte_available returns logical", {
 })
 
 test_that("run_minter_scenarios works with single scenario", {
-  skip_if_not(minte_available(), "minte Python package not available")
+  skip_if_no_python_pkgs()
   
   results <- run_minter_scenarios(
     scenario_tag = "test_scenario",
@@ -38,7 +38,7 @@ test_that("run_minter_scenarios works with single scenario", {
 })
 
 test_that("run_minter_scenarios works with multiple scenarios", {
-  skip_if_not(minte_available(), "minte Python package not available")
+  skip_if_no_python_pkgs()
   
   n <- 3
   results <- run_minter_scenarios(
@@ -63,7 +63,7 @@ test_that("run_minter_scenarios works with multiple scenarios", {
 })
 
 test_that("calculate_overall_dn0 returns list with dn0 and itn_use", {
-  skip_if_not(minte_available(), "minte Python package not available")
+  skip_if_no_python_pkgs()
   
   result <- calculate_overall_dn0(
     resistance_level = 0.3,
@@ -82,7 +82,7 @@ test_that("calculate_overall_dn0 returns list with dn0 and itn_use", {
 
 test_that("available_net_types returns character vector", {
 
-  skip_if_not(minte_available(), "minte Python package not available")
+  skip_if_no_python_pkgs()
   
   net_types <- available_net_types()
   
@@ -93,19 +93,19 @@ test_that("available_net_types returns character vector", {
 })
 
 test_that("preload_all_models runs without error", {
-  skip_if_not(minte_available(), "minte Python package not available")
+  skip_if_no_python_pkgs()
   
   expect_no_error(preload_all_models())
 })
 
 test_that("clear_cache runs without error", {
-  skip_if_not(minte_available(), "minte Python package not available")
+  skip_if_no_python_pkgs()
   
   expect_no_error(clear_cache())
 })
 
 test_that("print.minter_results works", {
-  skip_if_not(minte_available(), "minte Python package not available")
+  skip_if_no_python_pkgs()
   
   results <- run_minter_scenarios(
     scenario_tag = "print_test",
