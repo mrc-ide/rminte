@@ -1,0 +1,384 @@
+---
+title: "MINTverse Tutorial: R Interface for MINTe Malaria Intervention Emulator"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MINTverse Tutorial: R Interface for MINTe Malaria Intervention Emulator}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10,
+  fig.height = 6
+)
+```
+
+# MINTverse Tutorial
+
+This tutorial demonstrates how to use the **rminte** R package to run malaria intervention scenarios using the MINTe neural emulator. This is the R equivalent of the Python `minte` package.
+
+## 2. Common R → Python equivalents
+
+Most of what you did in R with MINTer / MINTweb and tidyverse has a direct analogue in Python + pandas.
+
+| Task | R / tidyverse | Python / pandas |
+|------|---------------|-----------------|
+| Data frame | `data.frame()`, `tibble()` | `pd.DataFrame()` |
+| Read CSV | `readr::read_csv("x.csv")` | `pd.read_csv("x.csv")` |
+| Filter rows | `df %>% filter(var == 1)` | `df[df["var"] == 1]` |
+| Select columns | `df %>% select(a, b)` | `df[["a", "b"]]` |
+| Arrange / sort | `df %>% arrange(a)` | `df.sort_values("a")` |
+| Grouped summary | `df %>% group_by(a) %>% summarise(mean(b))` | `df.groupby("a")["b"].mean().reset_index()` |
+| Pipe | `%>%` | chain methods: `df.query(...).groupby(...).mean()` |
+| Run scenarios | `run_minter_scenarios(...)` | `run_minter_scenarios(...)` |
+| Missing value (numeric) | `NA_real_` | `numpy.nan` (imported as `np.nan`) |
+| Missing value (string) | `NA_character_` | `None` |
+
+Conceptually:
+
+- In R you pass vectors (`c(0.3, 0.5, 0.7)`);
+- in Python you pass lists or NumPy arrays (`[0.3, 0.5, 0.7]` or `np.array([...])`).
+- `run_minter_scenarios` is the Python analogue of `run_mintweb_controller`: you give it vectors of parameters, and it runs all scenarios at once.
+
+## 3. Imports and basic configuration
+
+Here we import:
+
+- `dplyr` and `tidyr` for data handling
+- `run_minter_scenarios` – the main controller
+- `create_scenario_plots` – a built-in plotting helper
+
+```{r imports, message=FALSE, warning=FALSE}
+library(rminte)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+## 4. What `run_minter_scenarios` does
+
+At a high level, `run_minter_scenarios`:
+
+1. **Back-calculates EIR** from current prevalence and interventions using the pre-trained estiMINT XGBoost model.
+2. **Builds a scenario table** with:
+   - baseline EIR
+   - current and future ITN/IRS/LSM
+   - vector behaviour (`Q0`, `phi`)
+   - resistance & net quality (`dn0_use`, `dn0_future`)
+3. **Runs the neural emulator** to predict:
+   - under-5 daily prevalence trajectories
+   - all-age daily clinical incidence trajectories per 1000
+4. **Returns a results object** (similar to an R list) with:
+   - `results$prevalence` – Data frame of prevalence over time for each scenario
+   - `results$cases` – Data frame of clinical cases over time for each scenario
+   - `results$scenario_meta` – Per-scenario metadata, incl. EIR validity
+   - `results$eir_valid` – TRUE/FALSE flag
+   - `results$benchmarks` – (optional) runtime timings
+
+In this tutorial we treat the ML models as a black box: you don't have to write or edit any neural-network code to use MINTe.
+
+## 5. A single simple scenario
+
+Here we run one scenario by passing single values. This is conceptually the same as a one-row data frame.
+
+```{r single-scenario}
+# Example: a single scenario
+scenario_tag   <- "example_scenario"
+res_use        <- 0.2       # current resistance
+py_only        <- 0.3
+py_pbo         <- 0.2
+py_pyrrole     <- 0.1
+py_ppf         <- 0.05
+prev           <- 0.55      # current under-5 prevalence at decision time
+Q0             <- 0.92      # proportion of bites indoors
+phi            <- 0.85      # proportion of bites while people are in bed
+season         <- 0         # 0 = perennial, 1 = strongly seasonal
+irs            <- 0.4       # current IRS coverage
+irs_future     <- 0.4       # future IRS coverage
+lsm            <- 0.2       # future LSM coverage
+routine        <- 1         # 1 = routine ITN distribution on, 0 = off
+
+# Future ITNs: here we scale up py-only nets to 45% coverage
+itn_future      <- 0.45
+net_type_future <- "py_only"
+
+res_one <- run_minter_scenarios(
+  scenario_tag    = scenario_tag,
+  res_use         = res_use,
+  py_only         = py_only,
+  py_pbo          = py_pbo,
+  py_pyrrole      = py_pyrrole,
+  py_ppf          = py_ppf,
+  prev            = prev,
+  Q0              = Q0,
+  phi             = phi,
+  season          = season,
+  irs             = irs,
+  itn_future      = itn_future,
+  net_type_future = net_type_future,
+  irs_future      = irs_future,
+  routine         = routine,
+  lsm             = lsm
+)
+
+res_one
+```
+
+## 6. What MINTe returns (`res$prevalence` and `res$cases`)
+
+The result object exposes the main outputs as attributes:
+
+- `res$prevalence` – Data frame with columns like:
+  - `index` (scenario index)
+  - `timestep` (time index, in 14-day steps)
+  - `prevalence` (under-5 prevalence)
+  - `model_type` (e.g. "LSTM")
+  - `scenario` / `scenario_tag`
+  - `eir_valid` (whether the EIR is inside the calibrated range)
+- `res$cases` – Data frame with similar structure, but with `cases` instead of `prevalence`
+
+Let's look at the first few rows to get a feel for this structure.
+
+```{r view-output}
+cat("Prevalence (head):\n")
+head(res_one$prevalence)
+
+cat("\nCases (head):\n")
+head(res_one$cases)
+
+cat("\nColumns in prevalence table:", names(res_one$prevalence), "\n")
+cat("Columns in cases table:", names(res_one$cases), "\n")
+```
+
+## 7. Running multiple scenarios (R `run_mintweb_controller` → Python)
+ 
+In R you might have run something like:
+
+```r
+high_prev <- run_mintweb_controller(
+  scenario_tag = c("no_intervention", "irs_only", ...),
+  res_use      = c(0.2, 0.2, ...),
+  ...
+)
+```
+
+The equivalent is to pass vectors of equal length to `run_minter_scenarios`. Each position `i` defines one scenario.
+
+Below we reproduce the high-prevalence example.
+
+```{r multiple-scenarios}
+# High-prevalence example with multiple intervention packages
+scenario_tag <- c(
+  "no_intervention", "irs_only", "lsm_only", "py_only_only",
+  "py_only_with_lsm", "py_pbo_only", "py_pbo_with_lsm", "py_pyrrole_only",
+  "py_pyrrole_with_lsm", "py_ppf_only", "py_ppf_with_lsm"
+)
+n <- length(scenario_tag)
+
+res_use    <- rep(0.2, n)
+py_only    <- rep(0.3, n)
+py_pbo     <- rep(0.2, n)
+py_pyrrole <- rep(0.1, n)
+py_ppf     <- rep(0.05, n)
+prev       <- rep(0.55, n)
+Q0         <- rep(0.92, n)
+phi        <- rep(0.85, n)
+season     <- rep(0, n)
+irs        <- rep(0.4, n)
+
+itn_future <- c(
+  0.00, 0.00, 0.00,   # no nets for the first three scenarios
+  0.45, 0.45,         # py_only w/wo LSM
+  0.45, 0.45,         # py_pbo w/wo LSM
+  0.45, 0.45,         # py_pyrrole w/wo LSM
+  0.45, 0.45          # py_ppf w/wo LSM
+)
+
+net_type_future <- c(
+  NA, NA, NA,
+  "py_only", "py_only",
+  "py_pbo", "py_pbo",
+  "py_pyrrole", "py_pyrrole",
+  "py_ppf", "py_ppf"
+)
+
+irs_future <- c(
+  0.0, 0.5, 0.0,      # second scenario increases IRS
+  0.0, 0.0,
+  0.0, 0.0,
+  0.0, 0.0,
+  0.0, 0.0
+)
+
+routine <- c(
+  0, 0, 0,            # first three: no routine distribution
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1
+)
+
+lsm <- c(
+  0.0, 0.0, 0.2,      # third scenario: LSM only
+  0.0, 0.2,
+  0.0, 0.2,
+  0.0, 0.2,
+  0.0, 0.2
+)
+
+res <- run_minter_scenarios(
+  scenario_tag    = scenario_tag,
+  res_use         = res_use,
+  py_only         = py_only,
+  py_pbo          = py_pbo,
+  py_pyrrole      = py_pyrrole,
+  py_ppf          = py_ppf,
+  prev            = prev,
+  Q0              = Q0,
+  phi             = phi,
+  season          = season,
+  irs             = irs,
+  itn_future      = itn_future,
+  net_type_future = net_type_future,
+  irs_future      = irs_future,
+  routine         = routine,
+  lsm             = lsm
+)
+
+cat("Prevalence shape:", nrow(res$prevalence), "x", ncol(res$prevalence), "\n")
+cat("Cases shape:", nrow(res$cases), "x", ncol(res$cases), "\n")
+head(res$prevalence)
+```
+
+## 8. Exploring results in data form
+
+Typical tasks a malaria researcher might want:
+
+- Look at the first few rows: `head()`
+- Filter to a specific scenario or time window
+- Summarise average prevalence / incidence over a period
+- Compare scenarios side-by-side
+
+We do this with dplyr, which plays the same role as pandas in Python.
+
+```{r explore-results}
+prev_df <- res$prevalence
+cases_df <- res$cases
+
+# First few rows of each
+cat("Prevalence:\n")
+head(prev_df)
+
+cat("\nCases:\n")
+head(cases_df)
+
+# Unique scenarios
+cat("\nScenarios:", unique(prev_df$scenario), "\n")
+
+# Example: subset to a single scenario
+subset_df <- prev_df %>% filter(scenario == "py_pbo_with_lsm")
+head(subset_df)
+
+# Example: summary over the whole time horizon
+mean_prev_by_scenario <- prev_df %>%
+  group_by(scenario) %>%
+  summarise(prevalence = mean(prevalence, na.rm = TRUE)) %>%
+  arrange(desc(prevalence))
+
+cat("\nMean prevalence over all timesteps by scenario:\n")
+print(mean_prev_by_scenario)
+```
+
+## 9. Using the built-in plotting helper: `create_scenario_plots`
+
+MINTe provides a convenience function `create_scenario_plots` that:
+
+- Takes the `res$prevalence` (and/or `res$cases`) table
+- Automatically generates per-scenario plots of prevalence and/or cases over time
+- Saves them as image files (e.g. `.png`) in a chosen folder
+
+This is the quickest way to get a full set of figures for a gallery of scenarios.
+
+```{r create-plots-dir}
+# Create a folder for plots (if it doesn't exist)
+dir.create("plots", showWarnings = FALSE)
+```
+
+```{r builtin-plots, eval=TRUE, results='hide'}
+# Use the built-in plotting helper
+plots <- create_scenario_plots(
+  res$prevalence,
+  output_dir = "plots/",
+  plot_type = "both"   # "individual", "combined", or "both"
+)
+
+cat("Created plots:", names(plots), "\n")
+```
+
+The plots have been saved to the `plots/` folder. Here is the combined plot:
+
+```{r show-combined-plot, echo=FALSE, out.width="100%"}
+knitr::include_graphics("plots/prevalence_all_scenarios_combined.png")
+```
+
+## 10. Optional: custom inline plot
+
+For more control, you can create custom plots using ggplot2. Here we convert timesteps to years and plot a subset of key scenarios:
+
+```{r custom-plots, fig.width=10, fig.height=6}
+# Make a copy and add a 'year' column (timestep * 14 days → years)
+prev_df_years <- res$prevalence
+prev_df_years$year <- prev_df_years$timestep * 14 / 365.0
+
+# Example: plot prevalence trajectories for a few key scenarios inline
+key_scenarios <- c("no_intervention", "py_pbo_with_lsm", "py_ppf_with_lsm")
+
+prev_df_years %>%
+  filter(scenario %in% key_scenarios) %>%
+  arrange(year) %>%
+  ggplot(aes(x = year, y = prevalence, color = scenario)) +
+  geom_line(linewidth = 1) +
+  labs(
+    title = "MINTe prevalence trajectories (selected scenarios)",
+    x = "time (years)",
+    y = "under-5 prevalence",
+    color = "Scenario"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+## 11. Summary statistics
+
+```{r summary-stats}
+# Mean prevalence by scenario (sorted)
+mean_prev <- res$prevalence %>%
+  group_by(scenario) %>%
+  summarise(prevalence = mean(prevalence, na.rm = TRUE)) %>%
+  arrange(desc(prevalence))
+
+cat("Mean prevalence over all timesteps by scenario:\n")
+print(mean_prev)
+```
+
+## 12. Exporting results to CSV
+
+```{r export-csv, eval=FALSE}
+# Export prevalence results
+write.csv(res$prevalence, "prevalence_results.csv", row.names = FALSE)
+
+# Export cases results  
+write.csv(res$cases, "cases_results.csv", row.names = FALSE)
+
+# Export summary statistics
+write.csv(mean_prev, "mean_prevalence_summary.csv", row.names = FALSE)
+```
+
+## Session Info
+
+```{r session-info}
+sessionInfo()
+```

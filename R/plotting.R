@@ -4,13 +4,19 @@
 #' Create visualizations from MINTe results. Generates plots of prevalence
 #' and/or cases over time for each scenario.
 #'
-#' @param data A data frame of results (e.g., from `results$prevalence`).
+#' @param results A data frame of results (e.g., from `results$prevalence`).
 #' @param output_dir Character. Directory to save plots. If NULL, plots are
 #'   returned but not saved.
-#' @param plot_type Character. Type of plot: "prevalence", "cases", or "both".
-#' @param show_plot Logical. If TRUE, display plots interactively. Default FALSE.
+#' @param plot_type Character. Type of plot: "individual", "combined", or "both".
+#' @param predictor Character. Predictor type ("prevalence" or "cases"). 
+#'   Auto-detected if NULL.
+#' @param window_size Integer. Days per timestep. Default 14.
+#' @param plot_tight Logical. Use tight y-axis scaling. Default FALSE.
+#' @param figsize_combined Numeric vector of length 2. Figure size for combined plot.
+#' @param figsize_individual Numeric vector of length 2. Figure size for individual plots.
+#' @param dpi Integer. DPI for saved figures. Default 300.
 #'
-#' @return A list of plot objects (matplotlib figures converted to R).
+#' @return A list of plot objects (matplotlib figures).
 #'
 #' @examples
 #' \dontrun{
@@ -18,27 +24,40 @@
 #' plots <- create_scenario_plots(
 #'   results$prevalence,
 #'   output_dir = "plots/",
-#'   plot_type = "prevalence"
+#'   plot_type = "both"
 #' )
 #' }
 #'
 #' @export
-create_scenario_plots <- function(data,
+create_scenario_plots <- function(results,
                                    output_dir = NULL,
-                                   plot_type = "prevalence",
-                                   show_plot = FALSE) {
+                                   plot_type = "both",
+                                   predictor = NULL,
+                                   window_size = 14L,
+                                   plot_tight = FALSE,
+                                   figsize_combined = c(12, 8),
+                                   figsize_individual = c(10, 6),
+                                   dpi = 300L) {
   # Convert R data frame to pandas
-  py_data <- reticulate::r_to_py(data)
+  py_results <- reticulate::r_to_py(results)
   
   # Build arguments
   args <- list(
-    data = py_data,
+    results = py_results,
     plot_type = plot_type,
-    show_plot = show_plot
+    window_size = as.integer(window_size),
+    plot_tight = plot_tight,
+    figsize_combined = reticulate::tuple(figsize_combined[1], figsize_combined[2]),
+    figsize_individual = reticulate::tuple(figsize_individual[1], figsize_individual[2]),
+    dpi = as.integer(dpi)
   )
   
   if (!is.null(output_dir)) {
     args$output_dir <- output_dir
+  }
+  
+  if (!is.null(predictor)) {
+    args$predictor <- predictor
   }
   
   # Call Python function
