@@ -14,3 +14,4 @@
 \description{
 Print method for mintweb_results
 }
+\keyword{internal}

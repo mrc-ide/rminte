@@ -53,4 +53,6 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+          # Skip vignettes on macOS due to matplotlib/font cache segfault
+          build_args: ${{ runner.os == 'macOS' && 'c("--no-manual","--no-build-vignettes")' || 'c("--no-manual","--compact-vignettes=gs+qpdf")' }}
+          args: ${{ runner.os == 'macOS' && 'c("--no-manual","--no-vignettes","--as-cran")' || 'c("--no-manual","--as-cran")' }}

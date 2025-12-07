@@ -136,6 +136,7 @@ run_minter_scenarios <- function(scenario_tag = NULL,
 #' Print method for minter_results
 #' @param x A minter_results object
 #' @param ... Additional arguments (ignored)
+#' @keywords internal
 #' @export
 print.minter_results <- function(x, ...) {
   cat("MINTer Results\n")

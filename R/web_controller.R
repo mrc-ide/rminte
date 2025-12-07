@@ -126,6 +126,7 @@ format_for_json <- function(results) {
 #' Print method for mintweb_results
 #' @param x A mintweb_results object
 #' @param ... Additional arguments (ignored)
+#' @keywords internal
 #' @export
 print.mintweb_results <- function(x, ...) {
   cat("MINTweb Results\n")
