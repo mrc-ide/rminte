@@ -16,7 +16,11 @@ Residual Spraying), and LSM (Larval Source Management).
 - [`run_malaria_emulator`](https://mrc-ide.github.io/rminte/reference/run_malaria_emulator.md):
   Direct emulator interface
 
-- `create_scenario_plots`: Create visualizations
+- [`plot_prevalence`](https://mrc-ide.github.io/rminte/reference/plot_prevalence.md):
+  Plot prevalence over time (ggplot2)
+
+- [`plot_cases`](https://mrc-ide.github.io/rminte/reference/plot_cases.md):
+  Plot cases over time (ggplot2)
 
 ## Utility Functions
 

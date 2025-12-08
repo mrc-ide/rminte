@@ -222,11 +222,11 @@ res_multi <- run_minter_scenarios(
 #> 
 #> === Benchmark Results ===
 #> Pre-load models to cache: 0.000 seconds
-#> Run EIR predictions (11 scenarios): 0.057 seconds
-#> Run Prevalence NN (11 scenarios): 0.046 seconds
-#> Run Cases NN (11 scenarios): 0.061 seconds
+#> Run EIR predictions (11 scenarios): 0.052 seconds
+#> Run Prevalence NN (11 scenarios): 0.043 seconds
+#> Run Cases NN (11 scenarios): 0.059 seconds
 #> 
-#> Total time: 0.165 seconds
+#> Total time: 0.154 seconds
 #> ==============================
 
 print(res_multi)
@@ -238,11 +238,11 @@ print(res_multi)
 #> EIR valid: TRUE 
 #> 
 #> Benchmarks:
-#>    preload_models : 3.33786e-06 
-#>    run_eir_models : 0.05744791 
-#>    run_neural_network_prevalence : 0.04597807 
-#>    run_neural_network_cases : 0.06109977 
-#>    total : 0.1653068 
+#>    preload_models : 2.622604e-06 
+#>    run_eir_models : 0.05206537 
+#>    run_neural_network_prevalence : 0.04267907 
+#>    run_neural_network_cases : 0.05851197 
+#>    total : 0.1539843 
 #>    total_scenarios : 11
 ```
 
