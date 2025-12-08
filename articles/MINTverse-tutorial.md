@@ -46,7 +46,8 @@ Here we import:
 
 - `dplyr` and `tidyr` for data handling
 - `run_minter_scenarios` – the main controller
-- `create_scenario_plots` – a built-in plotting helper
+- `create_scenario_plots_mpl` – a built-in matplotlib plotting helper
+- `plot_prevalence` / `plot_cases` – native R/ggplot2 plotting functions
 
 ``` r
 library(rminte)
@@ -410,9 +411,10 @@ print(mean_prev_by_scenario)
 #> 11 irs_only                 0.523
 ```
 
-### 9. Using the built-in plotting helper: `create_scenario_plots`
+### 9. Using the built-in plotting helper: `create_scenario_plots_mpl`
 
-MINTe provides a convenience function `create_scenario_plots` that:
+MINTe provides a convenience function `create_scenario_plots_mpl` that
+wraps the Python matplotlib plotting functionality:
 
 - Takes the `res$prevalence` (and/or `res$cases`) table
 - Automatically generates per-scenario plots of prevalence and/or cases
@@ -422,14 +424,21 @@ MINTe provides a convenience function `create_scenario_plots` that:
 This is the quickest way to get a full set of figures for a gallery of
 scenarios.
 
+**Note:** For native R plotting with ggplot2, you can also use
+[`plot_prevalence()`](https://mrc-ide.github.io/rminte/reference/plot_prevalence.md)
+or
+[`plot_cases()`](https://mrc-ide.github.io/rminte/reference/plot_cases.md)
+which provide the same functionality but return ggplot2 objects that
+integrate better with R workflows.
+
 ``` r
 # Create a folder for plots (if it doesn't exist)
 dir.create("plots", showWarnings = FALSE)
 ```
 
 ``` r
-# Use the built-in plotting helper
-plots <- create_scenario_plots(
+# Use the built-in matplotlib plotting helper
+plots <- create_scenario_plots_mpl(
   res$prevalence,
   output_dir = "plots/",
   plot_type = "both"   # "individual", "combined", or "both"

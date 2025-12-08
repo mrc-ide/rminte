@@ -11,7 +11,7 @@
 <url><loc>https://mrc-ide.github.io/rminte/reference/calculate_overall_dn0.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/clear_cache.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/configure_minte.html</loc></url>
-<url><loc>https://mrc-ide.github.io/rminte/reference/create_scenario_plots.html</loc></url>
+<url><loc>https://mrc-ide.github.io/rminte/reference/create_scenario_plots_mpl.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/create_scenarios.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/define_bednet_types.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/format_for_json.html</loc></url>
@@ -22,7 +22,7 @@
 <url><loc>https://mrc-ide.github.io/rminte/reference/load_emulator_models.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/minte_available.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/plot_cases.html</loc></url>
-<url><loc>https://mrc-ide.github.io/rminte/reference/plot_emulator_results.html</loc></url>
+<url><loc>https://mrc-ide.github.io/rminte/reference/plot_emulator_results_mpl.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/plot_prevalence.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/predict_full_sequence.html</loc></url>
 <url><loc>https://mrc-ide.github.io/rminte/reference/preload_all_models.html</loc></url>

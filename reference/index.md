@@ -43,14 +43,14 @@ Helper functions for calculations and conversions
 
 Functions for plotting results
 
-- [`create_scenario_plots()`](https://mrc-ide.github.io/rminte/reference/create_scenario_plots.md)
-  : Create Scenario Plots
-- [`plot_emulator_results()`](https://mrc-ide.github.io/rminte/reference/plot_emulator_results.md)
-  : Plot Emulator Results
 - [`plot_prevalence()`](https://mrc-ide.github.io/rminte/reference/plot_prevalence.md)
-  : Plot Prevalence Over Time (R native)
+  : Plot Prevalence Over Time
 - [`plot_cases()`](https://mrc-ide.github.io/rminte/reference/plot_cases.md)
-  : Plot Cases Over Time (R native)
+  : Plot Cases Over Time
+- [`create_scenario_plots_mpl()`](https://mrc-ide.github.io/rminte/reference/create_scenario_plots_mpl.md)
+  : Create Scenario Plots (Matplotlib)
+- [`plot_emulator_results_mpl()`](https://mrc-ide.github.io/rminte/reference/plot_emulator_results_mpl.md)
+  : Plot Emulator Results (Matplotlib)
 
 ## Model Cache
 

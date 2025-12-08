@@ -231,7 +231,7 @@ clear_cache()
 | [`run_minter_scenarios()`](https://mrc-ide.github.io/rminte/reference/run_minter_scenarios.md)     | Main entry point for running intervention scenarios |
 | [`run_malaria_emulator()`](https://mrc-ide.github.io/rminte/reference/run_malaria_emulator.md)     | Direct emulator interface for scenario predictions  |
 | [`run_mintweb_controller()`](https://mrc-ide.github.io/rminte/reference/run_mintweb_controller.md) | Simplified web interface controller                 |
-| [`create_scenario_plots()`](https://mrc-ide.github.io/rminte/reference/create_scenario_plots.md)   | Create visualizations from results (Python)         |
+| `create_scenario_plots()`                                                                          | Create visualizations from results (Python)         |
 | [`plot_prevalence()`](https://mrc-ide.github.io/rminte/reference/plot_prevalence.md)               | Plot prevalence over time (ggplot2)                 |
 | [`plot_cases()`](https://mrc-ide.github.io/rminte/reference/plot_cases.md)                         | Plot cases over time (ggplot2)                      |
 
