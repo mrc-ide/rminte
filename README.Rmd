@@ -1,0 +1,250 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+# Set matplotlib backend for headless rendering
+Sys.setenv(MPLBACKEND = "Agg")
+```
+
+# rminte
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/mrc-ide/rminte/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mrc-ide/rminte/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/mrc-ide/rminte/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/mrc-ide/rminte/actions/workflows/pkgdown.yaml)
+[![Codecov test coverage](https://codecov.io/gh/mrc-ide/rminte/branch/main/graph/badge.svg)](https://app.codecov.io/gh/mrc-ide/rminte?branch=main)
+<!-- badges: end -->
+
+An R interface to the Python [MINTe (Malaria Intervention Emulator)](https://github.com/CosmoNaught/MINTe-python) package. This package provides neural network-based malaria scenario predictions for evaluating intervention strategies including ITNs (Insecticide-Treated Nets), IRS (Indoor Residual Spraying), and LSM (Larval Source Management).
+
+## Documentation
+
+📖 **[Full documentation and vignettes](https://mrc-ide.github.io/rminte/)**
+
+## Features
+
+- **Fast Scenario Predictions**: Run thousands of malaria intervention scenarios in seconds using pre-trained LSTM models
+- **Multiple Predictors**: Predict both prevalence and clinical cases
+- **Flexible Net Types**: Support for various ITN types (pyrethroid-only, PBO, pyrrole, PPF)
+- **Model Caching**: Efficient caching of loaded models for faster subsequent runs
+- **Native R Plotting**: Built-in ggplot2 visualization functions
+- **Web Interface Support**: Lightweight controller for web application integration
+
+## Installation
+
+### Prerequisites
+
+First, install the Python `minte` package:
+
+```bash
+pip install minte
+```
+
+### Install rminte
+
+Install the R package from GitHub:
+
+```r
+# install.packages("devtools")
+devtools::install_github("mrc-ide/rminte")
+```
+
+Alternatively, install the Python package from within R:
+
+```r
+library(rminte)
+install_minte()
+```
+
+## Quick Start
+
+### Check Installation
+
+```{r check-install}
+library(rminte)
+
+# Check if minte is available
+minte_available()
+```
+
+### Run a Single Scenario
+
+```{r single-scenario}
+results <- run_minter_scenarios(
+ scenario_tag = "example_scenario",
+ res_use = 0.2,
+ py_only = 0.3,
+ py_pbo = 0.2,
+ py_pyrrole = 0.1,
+ py_ppf = 0.05,
+ prev = 0.55,
+ Q0 = 0.92,
+ phi = 0.85,
+ season = 0,
+ irs = 0.4,
+ irs_future = 0.4,
+ lsm = 0.2,
+ routine = 1,
+ itn_future = 0.45,
+ net_type_future = "py_only"
+)
+
+# View results structure
+print(results)
+```
+
+```{r view-prevalence}
+# View prevalence predictions
+head(results$prevalence)
+```
+
+### Running Multiple Scenarios
+
+```{r multiple-scenarios}
+# Define multiple scenarios
+n_scenarios <- 5
+results <- run_minter_scenarios(
+ scenario_tag = c("no_intervention", "irs_only", "lsm_only", 
+                  "py_pbo_only", "py_pbo_with_lsm"),
+ res_use = rep(0.2, n_scenarios),
+ py_only = c(0.3, 0.3, 0.3, 0.0, 0.0),
+ py_pbo = c(0.2, 0.2, 0.2, 0.5, 0.5),
+ py_pyrrole = rep(0.1, n_scenarios),
+ py_ppf = rep(0.05, n_scenarios),
+ prev = rep(0.55, n_scenarios),
+ Q0 = rep(0.92, n_scenarios),
+ phi = rep(0.85, n_scenarios),
+ season = rep(0, n_scenarios),
+ irs = c(0.0, 0.5, 0.0, 0.0, 0.0),
+ irs_future = c(0.0, 0.5, 0.0, 0.0, 0.0),
+ lsm = c(0.0, 0.0, 0.3, 0.0, 0.3),
+ routine = rep(1, n_scenarios)
+)
+
+# Analyze results
+library(dplyr)
+results$prevalence %>%
+ group_by(scenario_tag) %>%
+ summarise(mean_prev = mean(prevalence)) %>%
+ arrange(mean_prev)
+```
+
+### Visualization
+
+```{r plot-prevalence, fig.width=10, fig.height=6}
+library(ggplot2)
+
+# Plot prevalence over time
+p <- plot_prevalence(results, title = "Malaria Prevalence by Intervention")
+print(p)
+```
+
+```{r plot-cases, fig.width=10, fig.height=6}
+# Plot cases over time
+p_cases <- plot_cases(results)
+print(p_cases)
+```
+
+### Utility Functions
+
+```{r utility-functions}
+# Calculate net effectiveness from resistance
+result <- calculate_overall_dn0(
+ resistance_level = 0.3,
+ py_only = 0.4,
+ py_pbo = 0.3,
+ py_pyrrole = 0.2,
+ py_ppf = 0.1
+)
+cat("Overall dn0:", result$dn0, "\n")
+cat("Total ITN use:", result$itn_use, "\n")
+
+# Get available net types
+net_types <- available_net_types()
+print(net_types)
+```
+
+## API Reference
+
+### Main Functions
+
+| Function | Description |
+|----------|-------------|
+| `run_minter_scenarios()` | Main entry point for running intervention scenarios |
+| `run_malaria_emulator()` | Direct emulator interface for scenario predictions |
+| `run_mintweb_controller()` | Simplified web interface controller |
+| `plot_prevalence()` | Plot prevalence over time (ggplot2) |
+| `plot_cases()` | Plot cases over time (ggplot2) |
+| `create_scenario_plots_mpl()` | Create visualizations from results (matplotlib) |
+
+### Utility Functions
+
+| Function | Description |
+|----------|-------------|
+| `calculate_overall_dn0()` | Calculate net effectiveness from resistance and coverage |
+| `available_net_types()` | Get list of supported net types |
+| `resistance_to_dn0()` | Convert resistance to net effectiveness |
+| `preload_all_models()` | Pre-load models into cache |
+| `clear_cache()` | Clear model cache |
+| `create_scenarios()` | Helper to create scenarios DataFrame |
+
+### Setup Functions
+
+| Function | Description |
+|----------|-------------|
+| `minte_available()` | Check if minte Python package is available |
+| `configure_minte()` | Configure Python environment before initialization |
+| `install_minte()` | Install minte Python package (for manual env management) |
+
+## Output Structure
+
+The `run_minter_scenarios()` function returns a list with:
+
+- **prevalence**: Data frame with columns:
+ - `index`: Scenario index
+ - `timestep`: Time index (14-day periods)
+ - `prevalence`: Under-5 prevalence
+ - `model_type`: Model used (e.g., "LSTM")
+ - `scenario` / `scenario_tag`: Scenario identifier
+ - `eir_valid`: Whether EIR is within calibrated range
+
+- **cases**: Data frame with similar structure, containing clinical cases per 1000
+
+- **scenario_meta**: Per-scenario metadata
+
+- **eir_valid**: Overall EIR validity flag
+
+- **benchmarks**: Timing information (if `benchmark = TRUE`)
+
+## Requirements
+
+- R >= 4.0.0
+- Python >= 3.8
+- reticulate >= 1.41
+- minte Python package
+
+Optional:
+- ggplot2 (for native R plotting)
+- dplyr (for data manipulation examples)
+
+## License
+
+MIT
+
+## Citation
+
+If you use this package, please cite the original MINTe Python package:
+- [MINTe-python](https://github.com/CosmoNaught/MINTe-python)
+
+## Related Projects
+
+- [MINTe-python](https://github.com/CosmoNaught/MINTe-python) - Original Python package
+- [estiMINT-python](https://github.com/CosmoNaught/estiMINT-python) - EIR estimation package

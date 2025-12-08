@@ -54,5 +54,55 @@ test_that("load_emulator_models runs without error", {
 })
 
 # Note: generate_scenario_predictions, predict_full_sequence, and batch_predict_scenarios
-# are not currently exposed in the Python minte API, so we skip testing them.
-# These R wrappers exist for future API compatibility.
+# are low-level internal functions in the Python API that require model objects.
+# The R wrappers have simplified signatures that don't match the Python API.
+# These should be removed from exports or fixed in a future version.
+
+test_that("run_malaria_emulator works with cases predictor", {
+  skip_if_no_python_pkgs()
+  
+  scenarios <- create_scenarios(
+    eir = 50,
+    dn0_use = 0.5,
+    dn0_future = 0.6,
+    Q0 = 0.92,
+    phi_bednets = 0.85,
+    seasonal = 1,
+    routine = 0.1,
+    itn_use = 0.6,
+    irs_use = 0.0,
+    itn_future = 0.7,
+    irs_future = 0.3,
+    lsm = 0.0
+  )
+  
+  results <- run_malaria_emulator(scenarios, predictor = "cases")
+  
+  expect_s3_class(results, "data.frame")
+  expect_true(nrow(results) > 0)
+})
+
+test_that("run_malaria_emulator works with benchmark", {
+  skip_if_no_python_pkgs()
+  
+  scenarios <- create_scenarios(
+    eir = 50,
+    dn0_use = 0.5,
+    dn0_future = 0.6,
+    Q0 = 0.92,
+    phi_bednets = 0.85,
+    seasonal = 1,
+    routine = 0.1,
+    itn_use = 0.6,
+    irs_use = 0.0,
+    itn_future = 0.7,
+    irs_future = 0.3,
+    lsm = 0.0
+  )
+  
+  # benchmark=TRUE should still return results
+  results <- run_malaria_emulator(scenarios, predictor = "prevalence", benchmark = TRUE)
+  
+  expect_s3_class(results, "data.frame")
+  expect_true(nrow(results) > 0)
+})

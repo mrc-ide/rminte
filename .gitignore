@@ -28,6 +28,7 @@ __pycache__/
 
 # Test artifacts
 *.png
+!man/figures/*.png
 *.csv
 /doc/
 /Meta/
