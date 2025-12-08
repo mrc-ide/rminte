@@ -24,6 +24,8 @@ navbar:
       menu:
       - text: Getting Started
         href: articles/rminte-tutorial.html
+      - text: MINTverse Tutorial
+        href: articles/MINTverse-tutorial.html
 
 reference:
 - title: Core Functions
