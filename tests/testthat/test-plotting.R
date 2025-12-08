@@ -1,14 +1,8 @@
 # Tests for plotting.R functions
-
-# Helper to skip matplotlib tests on Windows CI (Tcl/Tk not available)
-skip_if_no_matplotlib <- function() {
-  skip_if_no_python_pkgs()
-  skip_on_os("windows")  # Tcl/Tk issues on Windows CI
-  Sys.setenv(MPLBACKEND = "Agg")
-}
+# Note: MPLBACKEND=Agg is set in helpers.R before Python imports
 
 test_that("create_scenario_plots_mpl works with prevalence data", {
-  skip_if_no_matplotlib()
+  skip_if_no_python_pkgs()
   
   results <- run_minter_scenarios(
     scenario_tag = "plot_test",
@@ -45,7 +39,7 @@ test_that("create_scenario_plots_mpl works with prevalence data", {
 })
 
 test_that("create_scenario_plots_mpl works without output_dir", {
-  skip_if_no_matplotlib()
+  skip_if_no_python_pkgs()
   
   results <- run_minter_scenarios(
     scenario_tag = "plot_test2",
@@ -74,7 +68,7 @@ test_that("create_scenario_plots_mpl works without output_dir", {
 })
 
 test_that("create_scenario_plots_mpl works with predictor specified", {
-  skip_if_no_matplotlib()
+  skip_if_no_python_pkgs()
   
   results <- run_minter_scenarios(
     scenario_tag = "plot_test3",

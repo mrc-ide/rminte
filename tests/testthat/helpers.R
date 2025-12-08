@@ -1,5 +1,10 @@
 # Helper functions for testing
 
+# Set matplotlib backend to Agg BEFORE any Python imports
+# This fixes Tcl/Tk issues on Windows CI with uv-managed Python
+# See: https://github.com/matplotlib/matplotlib/issues/28957
+Sys.setenv(MPLBACKEND = "Agg")
+
 python_pkgs_available <- function(pkgs = c("numpy", "pandas", "minte")) {
  found <- unlist(lapply(pkgs, reticulate::py_module_available))
  all(found)
