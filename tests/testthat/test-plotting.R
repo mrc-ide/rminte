@@ -1,6 +1,6 @@
 # Tests for plotting.R functions
 
-test_that("create_scenario_plots works with prevalence data", {
+test_that("create_scenario_plots_mpl works with prevalence data", {
   skip_if_no_python_pkgs()
   
   # Set matplotlib backend for headless testing
@@ -28,7 +28,7 @@ test_that("create_scenario_plots works with prevalence data", {
   plot_dir <- file.path(temp_dir, "test_plots")
   dir.create(plot_dir, showWarnings = FALSE)
   
-  plots <- create_scenario_plots(
+  plots <- create_scenario_plots_mpl(
     results$prevalence,
     output_dir = plot_dir,
     plot_type = "combined"
@@ -40,7 +40,7 @@ test_that("create_scenario_plots works with prevalence data", {
   unlink(plot_dir, recursive = TRUE)
 })
 
-test_that("create_scenario_plots works without output_dir", {
+test_that("create_scenario_plots_mpl works without output_dir", {
   skip_if_no_python_pkgs()
   
   Sys.setenv(MPLBACKEND = "Agg")
@@ -63,7 +63,7 @@ test_that("create_scenario_plots works without output_dir", {
   )
   
   # Without output_dir, plots should still be created but not saved
-  plots <- create_scenario_plots(
+  plots <- create_scenario_plots_mpl(
     results$prevalence,
     plot_type = "individual"
   )
@@ -71,7 +71,7 @@ test_that("create_scenario_plots works without output_dir", {
   expect_type(plots, "list")
 })
 
-test_that("create_scenario_plots works with predictor specified", {
+test_that("create_scenario_plots_mpl works with predictor specified", {
   skip_if_no_python_pkgs()
   
   Sys.setenv(MPLBACKEND = "Agg")
@@ -93,7 +93,7 @@ test_that("create_scenario_plots works with predictor specified", {
     lsm = 0.0
   )
   
-  plots <- create_scenario_plots(
+  plots <- create_scenario_plots_mpl(
     results$cases,
     plot_type = "combined",
     predictor = "cases"

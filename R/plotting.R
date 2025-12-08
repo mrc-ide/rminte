@@ -1,8 +1,13 @@
-#' Create Scenario Plots
+#' Create Scenario Plots (Matplotlib)
 #'
 #' @description
-#' Create visualizations from MINTe results. Generates plots of prevalence
-#' and/or cases over time for each scenario.
+#' Python/matplotlib wrapper for creating visualizations from MINTe results.
+#' This function calls the underlying Python `minte.create_scenario_plots()` 
+#' function and returns matplotlib figure objects.
+#'
+#' **Note:** For native R plotting with ggplot2, use [plot_prevalence()] or
+#' [plot_cases()] instead, which provide the same functionality using R's
+#' ggplot2 graphics system.
 #'
 #' @param results A data frame of results (e.g., from `results$prevalence`).
 #' @param output_dir Character. Directory to save plots. If NULL, plots are
@@ -16,20 +21,30 @@
 #' @param figsize_individual Numeric vector of length 2. Figure size for individual plots.
 #' @param dpi Integer. DPI for saved figures. Default 300.
 #'
-#' @return A list of plot objects (matplotlib figures).
+#' @return A list of matplotlib figure objects (Python objects). These can be
+#'   saved to files but are not directly viewable in R graphics devices.
+#'
+#' @seealso 
+#' * [plot_prevalence()] for native R/ggplot2 prevalence plots
+#' * [plot_cases()] for native R/ggplot2 cases plots
 #'
 #' @examples
 #' \dontrun{
 #' results <- run_minter_scenarios(...)
-#' plots <- create_scenario_plots(
+#' # Save matplotlib plots to files
+#' plots <- create_scenario_plots_mpl(
 #'   results$prevalence,
 #'   output_dir = "plots/",
 #'   plot_type = "both"
 #' )
+#'
+#' # For interactive R plotting, use the native functions instead:
+#' p <- plot_prevalence(results)
+#' print(p)
 #' }
 #'
 #' @export
-create_scenario_plots <- function(results,
+create_scenario_plots_mpl <- function(results,
                                    output_dir = NULL,
                                    plot_type = "both",
                                    predictor = NULL,
@@ -67,19 +82,29 @@ create_scenario_plots <- function(results,
   reticulate::py_to_r(py_plots)
 }
 
-#' Plot Emulator Results
+#' Plot Emulator Results (Matplotlib)
 #'
 #' @description
-#' Alternative plotting function for emulator results.
+#' Python/matplotlib wrapper for plotting emulator results. This function
+#' calls the underlying Python plotting function and returns matplotlib
+#' figure objects.
+#'
+#' **Note:** For native R plotting with ggplot2, use [plot_prevalence()] or
+#' [plot_cases()] instead.
 #'
 #' @param results Results from `run_malaria_emulator()` or similar.
 #' @param output_dir Character. Directory to save plots.
 #' @param ... Additional arguments passed to the Python function.
 #'
-#' @return Plot objects
+#' @return Matplotlib figure objects (Python objects). These can be saved to
+#'   files but are not directly viewable in R graphics devices.
+#'
+#' @seealso 
+#' * [plot_prevalence()] for native R/ggplot2 prevalence plots
+#' * [plot_cases()] for native R/ggplot2 cases plots
 #'
 #' @export
-plot_emulator_results <- function(results, output_dir = NULL, ...) {
+plot_emulator_results_mpl <- function(results, output_dir = NULL, ...) {
   py_results <- reticulate::r_to_py(results)
   
   args <- list(results = py_results, ...)
@@ -91,23 +116,46 @@ plot_emulator_results <- function(results, output_dir = NULL, ...) {
   reticulate::py_to_r(py_plots)
 }
 
-#' Plot Prevalence Over Time (R native)
+#' Plot Prevalence Over Time
 #'
 #' @description
-#' Create a ggplot2 visualization of prevalence over time. This is a native
-#' R implementation that doesn't require Python plotting.
+#' Create a ggplot2 visualization of prevalence over time. This is the
+#' recommended plotting function for R users, providing native R graphics
+#' that integrate with the R ecosystem (RStudio plots pane, R Markdown, etc.).
+#'
+#' This function provides equivalent functionality to the Python
+#' `minte.create_scenario_plots()` function but uses ggplot2 instead of
+#' matplotlib.
 #'
 #' @param results A minter_results object or data frame with prevalence data.
 #' @param scenarios Character vector. Which scenarios to plot. If NULL, plot all.
 #' @param title Character. Plot title.
 #'
-#' @return A ggplot2 object
+#' @return A ggplot2 object that can be printed, saved with `ggsave()`, or
+#'   further customized with ggplot2 functions.
+#'
+#' @seealso 
+#' * [plot_cases()] for plotting clinical cases
+#' * [create_scenario_plots_mpl()] for Python/matplotlib plotting (saves to files)
 #'
 #' @examples
 #' \dontrun{
 #' results <- run_minter_scenarios(...)
+#' 
+#' # Basic plot
 #' p <- plot_prevalence(results)
 #' print(p)
+#' 
+#' # Filter to specific scenarios
+#' p <- plot_prevalence(results, scenarios = c("scenario_1", "scenario_2"))
+#' 
+#' # Customize with ggplot2
+#' p <- plot_prevalence(results) +
+#'   ggplot2::theme_bw() +
+#'   ggplot2::scale_color_brewer(palette = "Set1")
+#' 
+#' # Save to file
+#' ggplot2::ggsave("prevalence.png", p, width = 10, height = 6)
 #' }
 #'
 #' @export
@@ -145,16 +193,47 @@ plot_prevalence <- function(results, scenarios = NULL, title = "Prevalence Over 
   p
 }
 
-#' Plot Cases Over Time (R native)
+#' Plot Cases Over Time
 #'
 #' @description
-#' Create a ggplot2 visualization of clinical cases over time.
+#' Create a ggplot2 visualization of clinical cases over time. This is the
+#' recommended plotting function for R users, providing native R graphics
+#' that integrate with the R ecosystem (RStudio plots pane, R Markdown, etc.).
+#'
+#' This function provides equivalent functionality to the Python
+#' `minte.create_scenario_plots()` function but uses ggplot2 instead of
+#' matplotlib.
 #'
 #' @param results A minter_results object or data frame with cases data.
 #' @param scenarios Character vector. Which scenarios to plot. If NULL, plot all.
 #' @param title Character. Plot title.
 #'
-#' @return A ggplot2 object
+#' @return A ggplot2 object that can be printed, saved with `ggsave()`, or
+#'   further customized with ggplot2 functions.
+#'
+#' @seealso 
+#' * [plot_prevalence()] for plotting prevalence
+#' * [create_scenario_plots_mpl()] for Python/matplotlib plotting (saves to files)
+#'
+#' @examples
+#' \dontrun{
+#' results <- run_minter_scenarios(...)
+#' 
+#' # Basic plot
+#' p <- plot_cases(results)
+#' print(p)
+#' 
+#' # Filter to specific scenarios
+#' p <- plot_cases(results, scenarios = c("scenario_1", "scenario_2"))
+#' 
+#' # Customize with ggplot2
+#' p <- plot_cases(results) +
+#'   ggplot2::theme_bw() +
+#'   ggplot2::scale_color_brewer(palette = "Set1")
+#' 
+#' # Save to file
+#' ggplot2::ggsave("cases.png", p, width = 10, height = 6)
+#' }
 #'
 #' @export
 plot_cases <- function(results, scenarios = NULL, title = "Clinical Cases Over Time") {

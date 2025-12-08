@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{plot_prevalence}
 \alias{plot_prevalence}
-\title{Plot Prevalence Over Time (R native)}
+\title{Plot Prevalence Over Time}
 \usage{
 plot_prevalence(results, scenarios = NULL, title = "Prevalence Over Time")
 }
@@ -14,17 +14,42 @@ plot_prevalence(results, scenarios = NULL, title = "Prevalence Over Time")
 \item{title}{Character. Plot title.}
 }
 \value{
-A ggplot2 object
+A ggplot2 object that can be printed, saved with \code{ggsave()}, or
+further customized with ggplot2 functions.
 }
 \description{
-Create a ggplot2 visualization of prevalence over time. This is a native
-R implementation that doesn't require Python plotting.
+Create a ggplot2 visualization of prevalence over time. This is the
+recommended plotting function for R users, providing native R graphics
+that integrate with the R ecosystem (RStudio plots pane, R Markdown, etc.).
+
+This function provides equivalent functionality to the Python
+\code{minte.create_scenario_plots()} function but uses ggplot2 instead of
+matplotlib.
 }
 \examples{
 \dontrun{
 results <- run_minter_scenarios(...)
+
+# Basic plot
 p <- plot_prevalence(results)
 print(p)
+
+# Filter to specific scenarios
+p <- plot_prevalence(results, scenarios = c("scenario_1", "scenario_2"))
+
+# Customize with ggplot2
+p <- plot_prevalence(results) +
+  ggplot2::theme_bw() +
+  ggplot2::scale_color_brewer(palette = "Set1")
+
+# Save to file
+ggplot2::ggsave("prevalence.png", p, width = 10, height = 6)
 }
 
+}
+\seealso{
+\itemize{
+\item \code{\link[=plot_cases]{plot_cases()}} for plotting clinical cases
+\item \code{\link[=create_scenario_plots_mpl]{create_scenario_plots_mpl()}} for Python/matplotlib plotting (saves to files)
+}
 }
