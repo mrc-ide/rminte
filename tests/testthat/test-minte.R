@@ -126,3 +126,216 @@ test_that("print.minter_results works", {
   
   expect_output(print(results), "MINTer Results")
 })
+
+test_that("run_minter_scenarios works with itn_future parameter", {
+  skip_if_no_python_pkgs()
+  
+  results <- run_minter_scenarios(
+    scenario_tag = "itn_future_test",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.3,
+    lsm = 0.0,
+    itn_future = 0.8
+  )
+  
+  expect_s3_class(results, "minter_results")
+})
+
+test_that("run_minter_scenarios works with net_type_future parameter", {
+  skip_if_no_python_pkgs()
+  
+  results <- run_minter_scenarios(
+    scenario_tag = "net_type_future_test",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.3,
+    lsm = 0.0,
+    itn_future = 0.8,
+    net_type_future = "py_pbo"
+  )
+  
+  expect_s3_class(results, "minter_results")
+})
+
+test_that("run_minter_scenarios works with benchmark=TRUE", {
+  skip_if_no_python_pkgs()
+  
+  results <- run_minter_scenarios(
+    scenario_tag = "benchmark_test",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.3,
+    lsm = 0.0,
+    benchmark = TRUE
+  )
+  
+  expect_s3_class(results, "minter_results")
+  expect_true("benchmarks" %in% names(results))
+})
+
+test_that("run_minter_scenarios works with single predictor", {
+  skip_if_no_python_pkgs()
+  
+  # Prevalence only
+  results_prev <- run_minter_scenarios(
+    scenario_tag = "prev_only",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.3,
+    lsm = 0.0,
+    predictor = "prevalence"
+  )
+  
+  expect_s3_class(results_prev, "minter_results")
+  
+  # Cases only
+  results_cases <- run_minter_scenarios(
+    scenario_tag = "cases_only",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.3,
+    lsm = 0.0,
+    predictor = "cases"
+  )
+  
+  expect_s3_class(results_cases, "minter_results")
+})
+
+test_that("run_minter_scenarios auto-generates scenario_tag", {
+  skip_if_no_python_pkgs()
+  
+  # Without scenario_tag
+  results <- run_minter_scenarios(
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.3,
+    lsm = 0.0
+  )
+  
+  expect_s3_class(results, "minter_results")
+  expect_true("scenario_tag" %in% names(results$prevalence))
+})
+
+test_that("run_minter_scenarios with perennial season", {
+  skip_if_no_python_pkgs()
+  
+  results <- run_minter_scenarios(
+    scenario_tag = "perennial_test",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 0,  # Perennial
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.3,
+    lsm = 0.0
+  )
+  
+  expect_s3_class(results, "minter_results")
+})
+
+test_that("run_minter_scenarios with LSM intervention", {
+  skip_if_no_python_pkgs()
+  
+  results <- run_minter_scenarios(
+    scenario_tag = "lsm_test",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.0,
+    irs_future = 0.0,
+    lsm = 0.5  # With LSM
+  )
+  
+  expect_s3_class(results, "minter_results")
+})
+
+test_that("run_minter_scenarios with current IRS", {
+  skip_if_no_python_pkgs()
+  
+  results <- run_minter_scenarios(
+    scenario_tag = "irs_test",
+    res_use = 0.3,
+    py_only = 0.4,
+    py_pbo = 0.3,
+    py_pyrrole = 0.2,
+    py_ppf = 0.1,
+    prev = 0.25,
+    Q0 = 0.92,
+    phi = 0.85,
+    season = 1,
+    routine = 0.1,
+    irs = 0.3,  # Current IRS
+    irs_future = 0.5,
+    lsm = 0.0
+  )
+  
+  expect_s3_class(results, "minter_results")
+})
