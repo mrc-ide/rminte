@@ -53,13 +53,12 @@ reference:
   - resistance_to_dn0
 
 - title: Visualization
-
   desc: Functions for plotting results
   contents:
-  - create_scenario_plots
-  - plot_emulator_results
   - plot_prevalence
   - plot_cases
+  - create_scenario_plots_mpl
+  - plot_emulator_results_mpl
 
 - title: Model Cache
   desc: Functions for managing model caching
