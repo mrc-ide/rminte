@@ -17,7 +17,8 @@ ITNs (Insecticide-Treated Nets), IRS (Indoor Residual Spraying), and LSM
 \item \code{\link{run_minter_scenarios}}: Main entry point for running scenarios
 \item \code{\link{run_mintweb_controller}}: Simplified web interface controller
 \item \code{\link{run_malaria_emulator}}: Direct emulator interface
-\item \code{\link{create_scenario_plots}}: Create visualizations
+\item \code{\link{plot_prevalence}}: Plot prevalence over time (ggplot2)
+\item \code{\link{plot_cases}}: Plot cases over time (ggplot2)
 }
 }
 
