@@ -79,6 +79,7 @@ articles:
   navbar: ~
   contents:
   - rminte-tutorial
+  - MINTverse-tutorial
 
 authors:
   footer:
