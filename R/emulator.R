@@ -113,67 +113,7 @@ load_emulator_models <- function(predictor = "both") {
   invisible(NULL)
 }
 
-#' Generate Scenario Predictions
-#'
-#' @description
-#' Generate predictions for a set of scenarios using the loaded models.
-#'
-#' @param scenarios A data frame of scenarios.
-#' @param predictor Character. Which prediction to generate.
-#'
-#' @return A data frame with predictions
-#'
-#' @export
-generate_scenario_predictions <- function(scenarios, predictor = "prevalence") {
-  py_scenarios <- reticulate::r_to_py(scenarios)
-  py_result <- minte$generate_scenario_predictions(
-    scenarios = py_scenarios,
-    predictor = predictor
-  )
-  
-  reticulate::py_to_r(py_result)
-}
-
-#' Predict Full Sequence
-#'
-#' @description
-#' Generate full sequence predictions for scenarios.
-#'
-#' @param scenarios A data frame of scenarios.
-#' @param predictor Character. Which prediction to generate.
-#'
-#' @return Predictions array
-#'
-#' @export
-predict_full_sequence <- function(scenarios, predictor = "prevalence") {
-  py_scenarios <- reticulate::r_to_py(scenarios)
-  py_result <- minte$predict_full_sequence(
-    scenarios = py_scenarios,
-    predictor = predictor
-  )
-  
-  reticulate::py_to_r(py_result)
-}
-
-#' Batch Predict Scenarios
-#'
-#' @description
-#' Run predictions in batches for large numbers of scenarios.
-#'
-#' @param scenarios A data frame of scenarios.
-#' @param predictor Character. Which prediction to generate.
-#' @param batch_size Integer. Number of scenarios per batch.
-#'
-#' @return A data frame with predictions
-#'
-#' @export
-batch_predict_scenarios <- function(scenarios, predictor = "prevalence", batch_size = 1000L) {
-  py_scenarios <- reticulate::r_to_py(scenarios)
-  py_result <- minte$batch_predict_scenarios(
-    scenarios = py_scenarios,
-    predictor = predictor,
-    batch_size = as.integer(batch_size)
-  )
-  
-  reticulate::py_to_r(py_result)
-}
+# Note: generate_scenario_predictions, predict_full_sequence, and batch_predict_scenarios
+# are low-level internal functions in the Python API that require model objects as parameters.
+# They are not exposed here as the R wrapper signatures would not match the Python API.
+# Use run_malaria_emulator() or run_minter_scenarios() instead.

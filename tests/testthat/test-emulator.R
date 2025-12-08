@@ -55,8 +55,7 @@ test_that("load_emulator_models runs without error", {
 
 # Note: generate_scenario_predictions, predict_full_sequence, and batch_predict_scenarios
 # are low-level internal functions in the Python API that require model objects.
-# The R wrappers have simplified signatures that don't match the Python API.
-# These should be removed from exports or fixed in a future version.
+# They have been removed from the R package as the wrapper signatures don't match the API.
 
 test_that("run_malaria_emulator works with cases predictor", {
   skip_if_no_python_pkgs()
