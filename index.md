@@ -246,26 +246,16 @@ The
 function returns a list with:
 
 - **prevalence**: Data frame with columns:
-
-- `index`: Scenario index
-
-- `timestep`: Time index (14-day periods)
-
-- `prevalence`: Under-5 prevalence
-
-- `model_type`: Model used (e.g., “LSTM”)
-
-- `scenario` / `scenario_tag`: Scenario identifier
-
-- `eir_valid`: Whether EIR is within calibrated range
-
+  - `index`: Scenario index
+  - `timestep`: Time index (14-day periods)
+  - `prevalence`: Under-5 prevalence
+  - `model_type`: Model used (e.g., “LSTM”)
+  - `scenario` / `scenario_tag`: Scenario identifier
+  - `eir_valid`: Whether EIR is within calibrated range
 - **cases**: Data frame with similar structure, containing clinical
   cases per 1000
-
 - **scenario_meta**: Per-scenario metadata
-
 - **eir_valid**: Overall EIR validity flag
-
 - **benchmarks**: Timing information (if `benchmark = TRUE`)
 
 ## Requirements

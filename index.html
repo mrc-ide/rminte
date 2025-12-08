@@ -374,17 +374,31 @@
 </h2>
 <p>The <code><a href="reference/run_minter_scenarios.html">run_minter_scenarios()</a></code> function returns a list with:</p>
 <ul>
-<li><p><strong>prevalence</strong>: Data frame with columns:</p></li>
-<li><p><code>index</code>: Scenario index</p></li>
-<li><p><code>timestep</code>: Time index (14-day periods)</p></li>
-<li><p><code>prevalence</code>: Under-5 prevalence</p></li>
-<li><p><code>model_type</code>: Model used (e.g., “LSTM”)</p></li>
-<li><p><code>scenario</code> / <code>scenario_tag</code>: Scenario identifier</p></li>
-<li><p><code>eir_valid</code>: Whether EIR is within calibrated range</p></li>
-<li><p><strong>cases</strong>: Data frame with similar structure, containing clinical cases per 1000</p></li>
-<li><p><strong>scenario_meta</strong>: Per-scenario metadata</p></li>
-<li><p><strong>eir_valid</strong>: Overall EIR validity flag</p></li>
-<li><p><strong>benchmarks</strong>: Timing information (if <code>benchmark = TRUE</code>)</p></li>
+<li>
+<strong>prevalence</strong>: Data frame with columns:
+<ul>
+<li>
+<code>index</code>: Scenario index</li>
+<li>
+<code>timestep</code>: Time index (14-day periods)</li>
+<li>
+<code>prevalence</code>: Under-5 prevalence</li>
+<li>
+<code>model_type</code>: Model used (e.g., “LSTM”)</li>
+<li>
+<code>scenario</code> / <code>scenario_tag</code>: Scenario identifier</li>
+<li>
+<code>eir_valid</code>: Whether EIR is within calibrated range</li>
+</ul>
+</li>
+<li>
+<strong>cases</strong>: Data frame with similar structure, containing clinical cases per 1000</li>
+<li>
+<strong>scenario_meta</strong>: Per-scenario metadata</li>
+<li>
+<strong>eir_valid</strong>: Overall EIR validity flag</li>
+<li>
+<strong>benchmarks</strong>: Timing information (if <code>benchmark = TRUE</code>)</li>
 </ul>
 </div>
 <div class="section level2">

@@ -1,31 +1,58 @@
 # Batch Predict Scenarios
 
-Run predictions in batches for large numbers of scenarios.
+Run batch predictions with the LSTM model. This is a low-level function
+for advanced use cases where you need fine-grained control over
+batching.
+
+For most use cases, prefer
+[`run_malaria_emulator()`](https://mrc-ide.github.io/rminte/reference/run_malaria_emulator.md)
+which handles model loading and batching automatically.
 
 ## Usage
 
 ``` r
 batch_predict_scenarios(
-  scenarios,
-  predictor = "prevalence",
-  batch_size = 1000L
+  model,
+  X,
+  device,
+  predictor,
+  batch_size = 32L,
+  use_amp = FALSE
 )
 ```
 
 ## Arguments
 
-- scenarios:
+- model:
 
-  A data frame of scenarios.
+  A loaded PyTorch LSTM model (nn.Module).
+
+- X:
+
+  A numpy array of input features with shape `[B, T, F]` (batch,
+  timesteps, features).
+
+- device:
+
+  A torch device object.
 
 - predictor:
 
-  Character. Which prediction to generate.
+  Character. Type of predictor ("prevalence" or "cases").
 
 - batch_size:
 
-  Integer. Number of scenarios per batch.
+  Integer. Batch size for inference. Default 32.
+
+- use_amp:
+
+  Logical. Use automatic mixed precision. Default FALSE.
 
 ## Value
 
-A data frame with predictions
+A numpy array of predictions with shape `[B, T]`.
+
+## See also
+
+[`run_malaria_emulator()`](https://mrc-ide.github.io/rminte/reference/run_malaria_emulator.md),
+[`predict_full_sequence()`](https://mrc-ide.github.io/rminte/reference/predict_full_sequence.md)
