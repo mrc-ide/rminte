@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   MINTverse-tutorial: MINTverse-tutorial.html
   rminte-tutorial: rminte-tutorial.html
-last_built: 2025-12-08T00:01Z
+last_built: 2025-12-08T00:12Z
 urls:
   reference: https://mrc-ide.github.io/rminte/reference
   article: https://mrc-ide.github.io/rminte/articles

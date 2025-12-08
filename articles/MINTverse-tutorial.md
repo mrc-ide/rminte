@@ -2,6 +2,13 @@
 
 ## MINTverse Tutorial
 
+> **Note:** This tutorial is an R adaptation of the original [MINTverse
+> Python
+> tutorial](https://github.com/CosmoNaught/MINTverse-tutorial/blob/main/MINTverse-tutorial.ipynb),
+> which demonstrates how the underlying Python `minte` package works.
+> The examples and workflow here mirror that tutorial but use the
+> **rminte** R interface.
+
 This tutorial demonstrates how to use the **rminte** R package to run
 malaria intervention scenarios using the MINTe neural emulator. This is
 the R equivalent of the Python `minte` package.
