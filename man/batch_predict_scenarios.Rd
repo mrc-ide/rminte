@@ -5,21 +5,38 @@
 \title{Batch Predict Scenarios}
 \usage{
 batch_predict_scenarios(
-  scenarios,
-  predictor = "prevalence",
-  batch_size = 1000L
+  model,
+  X,
+  device,
+  predictor,
+  batch_size = 32L,
+  use_amp = FALSE
 )
 }
 \arguments{
-\item{scenarios}{A data frame of scenarios.}
+\item{model}{A loaded PyTorch LSTM model (nn.Module).}
 
-\item{predictor}{Character. Which prediction to generate.}
+\item{X}{A numpy array of input features with shape \verb{[B, T, F]}
+(batch, timesteps, features).}
 
-\item{batch_size}{Integer. Number of scenarios per batch.}
+\item{device}{A torch device object.}
+
+\item{predictor}{Character. Type of predictor ("prevalence" or "cases").}
+
+\item{batch_size}{Integer. Batch size for inference. Default 32.}
+
+\item{use_amp}{Logical. Use automatic mixed precision. Default FALSE.}
 }
 \value{
-A data frame with predictions
+A numpy array of predictions with shape \verb{[B, T]}.
 }
 \description{
-Run predictions in batches for large numbers of scenarios.
+Run batch predictions with the LSTM model. This is a low-level function
+for advanced use cases where you need fine-grained control over batching.
+
+For most use cases, prefer \code{run_malaria_emulator()} which handles model
+loading and batching automatically.
+}
+\seealso{
+\code{\link[=run_malaria_emulator]{run_malaria_emulator()}}, \code{\link[=predict_full_sequence]{predict_full_sequence()}}
 }

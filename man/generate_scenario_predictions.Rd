@@ -4,16 +4,46 @@
 \alias{generate_scenario_predictions}
 \title{Generate Scenario Predictions}
 \usage{
-generate_scenario_predictions(scenarios, predictor = "prevalence")
+generate_scenario_predictions(
+  scenarios,
+  models,
+  model_types = c("LSTM"),
+  time_steps = 2190L
+)
 }
 \arguments{
-\item{scenarios}{A data frame of scenarios.}
+\item{scenarios}{A data frame of scenarios created by \code{create_scenarios()}.}
 
-\item{predictor}{Character. Which prediction to generate.}
+\item{models}{An EmulatorModels object returned by \code{load_emulator_models()}.}
+
+\item{model_types}{Character vector. Model types to use. Default \code{c("LSTM")}.}
+
+\item{time_steps}{Integer. Number of time steps in days. Default 2190.}
 }
 \value{
-A data frame with predictions
+A list of prediction dictionaries.
 }
 \description{
-Generate predictions for a set of scenarios using the loaded models.
+Generate predictions for a set of scenarios using pre-loaded models.
+This is a lower-level function that requires models to be loaded first
+using \code{load_emulator_models()}.
+
+For most use cases, prefer \code{run_malaria_emulator()} which handles model
+loading automatically.
+}
+\examples{
+\dontrun{
+models <- load_emulator_models(predictor = "prevalence")
+scenarios <- create_scenarios(
+  eir = 50, dn0_use = 0.5, dn0_future = 0.6, Q0 = 0.92,
+  phi_bednets = 0.85, seasonal = 1, routine = 0.1,
+  itn_use = 0.6, irs_use = 0.0, itn_future = 0.7,
+  irs_future = 0.3, lsm = 0.0
+)
+predictions <- generate_scenario_predictions(scenarios, models)
+}
+
+}
+\seealso{
+\code{\link[=load_emulator_models]{load_emulator_models()}}, \code{\link[=run_malaria_emulator]{run_malaria_emulator()}}
 }

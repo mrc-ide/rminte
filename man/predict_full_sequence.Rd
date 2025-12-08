@@ -4,16 +4,29 @@
 \alias{predict_full_sequence}
 \title{Predict Full Sequence}
 \usage{
-predict_full_sequence(scenarios, predictor = "prevalence")
+predict_full_sequence(model, full_ts, device, predictor, use_amp = FALSE)
 }
 \arguments{
-\item{scenarios}{A data frame of scenarios.}
+\item{model}{A loaded PyTorch model (nn.Module).}
 
-\item{predictor}{Character. Which prediction to generate.}
+\item{full_ts}{A numpy array of input features with shape \verb{[T, F]}.}
+
+\item{device}{A torch device object.}
+
+\item{predictor}{Character. Type of predictor ("prevalence" or "cases").}
+
+\item{use_amp}{Logical. Use automatic mixed precision. Default FALSE.}
 }
 \value{
-Predictions array
+A numpy array of predictions with shape \verb{[T]}.
 }
 \description{
-Generate full sequence predictions for scenarios.
+Generate full sequence predictions for a single scenario using a loaded model.
+This is a very low-level function for advanced use cases.
+
+For most use cases, prefer \code{run_malaria_emulator()} which handles model
+loading and batching automatically.
+}
+\seealso{
+\code{\link[=run_malaria_emulator]{run_malaria_emulator()}}, \code{\link[=batch_predict_scenarios]{batch_predict_scenarios()}}
 }

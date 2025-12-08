@@ -53,9 +53,46 @@ test_that("load_emulator_models runs without error", {
   expect_no_error(load_emulator_models(predictor = "cases"))
 })
 
-# Note: generate_scenario_predictions, predict_full_sequence, and batch_predict_scenarios
-# are low-level internal functions in the Python API that require model objects.
-# They have been removed from the R package as the wrapper signatures don't match the API.
+test_that("load_emulator_models returns models object", {
+  skip_if_no_python_pkgs()
+  
+  models <- load_emulator_models(predictor = "prevalence", verbose = FALSE)
+  
+  # Should return a Python object (EmulatorModels)
+  expect_true(!is.null(models))
+})
+
+test_that("generate_scenario_predictions works with loaded models", {
+  skip_if_no_python_pkgs()
+  
+  # Load models first
+  models <- load_emulator_models(predictor = "prevalence", verbose = FALSE)
+  
+  scenarios <- create_scenarios(
+    eir = 50,
+    dn0_use = 0.5,
+    dn0_future = 0.6,
+    Q0 = 0.92,
+    phi_bednets = 0.85,
+    seasonal = 1,
+    routine = 0.1,
+    itn_use = 0.6,
+    irs_use = 0.0,
+    itn_future = 0.7,
+    irs_future = 0.3,
+    lsm = 0.0
+  )
+  
+  predictions <- generate_scenario_predictions(scenarios, models)
+  
+  # Should return a list of predictions
+  expect_type(predictions, "list")
+  expect_true(length(predictions) > 0)
+})
+
+# Note: predict_full_sequence and batch_predict_scenarios require very low-level
+# PyTorch objects (model, tensors, device) that are difficult to test directly.
+# They are exposed for advanced users who need fine-grained control.
 
 test_that("run_malaria_emulator works with cases predictor", {
   skip_if_no_python_pkgs()

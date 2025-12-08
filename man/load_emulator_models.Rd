@@ -4,14 +4,43 @@
 \alias{load_emulator_models}
 \title{Load Emulator Models}
 \usage{
-load_emulator_models(predictor = "both")
+load_emulator_models(
+  predictor = "prevalence",
+  device = NULL,
+  verbose = TRUE,
+  force_reload = FALSE
+)
 }
 \arguments{
-\item{predictor}{Character. Which models to load: "prevalence", "cases", or "both".}
+\item{predictor}{Character. Which models to load: "prevalence" or "cases".}
+
+\item{device}{Character. Device to load models on ("cpu" or "cuda").
+If NULL, auto-detected.}
+
+\item{verbose}{Logical. Print loading messages. Default TRUE.}
+
+\item{force_reload}{Logical. Force reload even if cached. Default FALSE.}
 }
 \value{
-Invisible NULL
+An EmulatorModels object containing loaded models and configuration.
+This can be passed to \code{generate_scenario_predictions()}.
 }
 \description{
-Pre-load the neural network models into memory for faster subsequent runs.
+Load the neural network models into memory. Returns an EmulatorModels object
+that can be passed to \code{generate_scenario_predictions()} for lower-level control,
+or models are cached automatically for use by \code{run_malaria_emulator()}.
+}
+\examples{
+\dontrun{
+# Load prevalence models
+models <- load_emulator_models(predictor = "prevalence")
+
+# Use with generate_scenario_predictions
+scenarios <- create_scenarios(...)
+predictions <- generate_scenario_predictions(scenarios, models)
+}
+
+}
+\seealso{
+\code{\link[=generate_scenario_predictions]{generate_scenario_predictions()}}, \code{\link[=run_malaria_emulator]{run_malaria_emulator()}}
 }
